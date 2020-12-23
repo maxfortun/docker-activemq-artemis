@@ -1,0 +1,27 @@
+FROM openjdk:16-jdk-alpine
+
+ARG ACTIVEMQ_ARTEMIS_VERSION
+ENV ACTIVEMQ_ARTEMIS_VERSION=$ACTIVEMQ_ARTEMIS_VERSION
+
+RUN apk --update add curl \
+	&& rm -rf /var/cache/apk/*
+
+COPY build /build
+RUN /build/build.sh \
+	&& rm -rf /build
+
+EXPOSE 8161 \
+# JMX Exporter
+    9404 \
+# Port for CORE,MQTT,AMQP,HORNETQ,STOMP,OPENWIRE
+    61616 \
+# Port for HORNETQ,STOMP
+    5445 \
+# Port for AMQP
+    5672 \
+# Port for MQTT
+    1883 \
+#Port for STOMP
+    61613
+
+CMD [ "/var/lib/apache-artemis/bin/artemis", "run" ]
