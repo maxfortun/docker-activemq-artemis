@@ -29,6 +29,7 @@ while read port; do
 	DOCKER_RUN_ARGS+=( -p $hostPort:$port )
 done < <(docker image inspect -f '{{json .Config.ExposedPorts}}' $imageId|jq -r 'keys[]')
 
+DOCKER_RUN_ARGS+=( -v $GUEST_MNT/var/lib/apache-artemis/etc:/var/lib/apache-artemis/etc )
 DOCKER_RUN_ARGS+=( -v $GUEST_MNT/var/lib/apache-artemis/data:/var/lib/apache-artemis/data )
 
 docker update --restart=no $NAME || true
