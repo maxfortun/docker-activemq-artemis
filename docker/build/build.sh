@@ -19,3 +19,6 @@ mv $VERSIONED_NAME /opt/
 	--role amq \
 	--require-login \
 	$ACTIVEMQ_ARTEMIS_CLUSTER_PARAMS
+
+sed -i 's/localhost/0.0.0.0/g' /var/lib/apache-artemis/etc/bootstrap.xml
+sed -i 's#<cors>#<cors>\n\t<allow-origin>*://192.168.*</allow-origin>#g' /var/lib/apache-artemis/etc/jolokia-access.xml
