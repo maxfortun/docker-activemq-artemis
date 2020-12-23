@@ -4,6 +4,8 @@ pushd "$(dirname $0)"
 SWD=$(pwd)
 PATH="$PATH:$SWD"
 BWD=$(dirname "$SWD")
+HOST_MNT=${HOST_MNT:-$BWD/mnt}
+GUEST_MNT=${GUEST_MNT:-$BWD/mnt}
 
 # Let's make sure jq is available
 ! which jq >/dev/null && curl -o $SWD/jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-osx-amd64 && chmod a+x $SWD/jq
@@ -14,7 +16,7 @@ RUN_IMAGE="$REPO/$NAME"
 
 DOCKER_RUN_ARGS=( -e container=docker )
 DOCKER_RUN_ARGS+=( -v /etc/resolv.conf:/etc/resolv.conf:ro )
-#DOCKER_RUN_ARGS+=( --add-host host.docker.internal:host-gateway )
+DOCKER_RUN_ARGS+=( --add-host host.docker.internal:host-gateway )
 
 # Publish exposed ports
 imageId=$(docker images --format="{{.Repository}} {{.ID}}"|grep "^$RUN_IMAGE "|awk '{ print $2 }')
@@ -27,12 +29,7 @@ while read port; do
 	DOCKER_RUN_ARGS+=( -p $hostPort:$port )
 done < <(docker image inspect -f '{{json .Config.ExposedPorts}}' $imageId|jq -r 'keys[]')
 
-HOST_MNT=${HOST_MNT:-$BWD/mnt}
-GUEST_MNT=${GUEST_MNT:-$BWD/mnt}
-
-DOCKER_RUN_ARGS+=( -v $GUEST_MNT/etc/squid/squid.conf:/etc/squid/squid.conf )
-DOCKER_RUN_ARGS+=( -v $GUEST_MNT/etc/squid/conf.d:/etc/squid/conf.d )
-DOCKER_RUN_ARGS+=( -v $GUEST_MNT/var/cache/squid:/var/cache/squid )
+DOCKER_RUN_ARGS+=( -v $GUEST_MNT/var/lib/apache-artemis/data:/var/lib/apache-artemis/data )
 
 docker update --restart=no $NAME || true
 docker stop $NAME || true

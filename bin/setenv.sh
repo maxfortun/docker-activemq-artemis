@@ -10,7 +10,8 @@ DOCKER_BUILD_ARGS+=( --build-arg NAME=$NAME )
 DOCKER_BUILD_ARGS+=( --build-arg VERSION=$VERSION )
 
 DOCKER_BUILD_ARGS+=( --build-arg ACTIVEMQ_ARTEMIS_VERSION=2.16.0 )
-
+DOCKER_BUILD_ARGS+=( --build-arg ACTIVEMQ_ARTEMIS_USER=$(cat $GUEST_MNT/local/artemis-user) )
+DOCKER_BUILD_ARGS+=( --build-arg ACTIVEMQ_ARTEMIS_PASSWORD=$(cat $GUEST_MNT/local/artemis-password) )
 
 #if netstat -an|grep -q \.3128.*LISTEN; then
 	#proxy_ip=$(ifconfig -a|grep inet.*192.168.|awk '{ print $2}')

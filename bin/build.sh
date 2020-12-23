@@ -4,6 +4,8 @@ pushd "$(dirname $0)"
 SWD=$(pwd)
 BWD=$(dirname "$SWD")
 popd
+HOST_MNT=${HOST_MNT:-$BWD/mnt}
+GUEST_MNT=${GUEST_MNT:-$BWD/mnt}
 
 . $SWD/setenv.sh
 

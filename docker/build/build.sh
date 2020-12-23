@@ -9,12 +9,13 @@ curl -o $ARCHIVE -L "https://www.apache.org/dyn/closer.cgi?filename=activemq/act
 tar xvzf $ARCHIVE
 mv $VERSIONED_NAME /opt/
 
+[ -n $ACTIVEMQ_ARTEMIS_CLUSTER_USER ] && ACTIVEMQ_ARTEMIS_CLUSTER_PARAMS="$ACTIVEMQ_ARTEMIS_CLUSTER_PARAMS --cluster-user $ACTIVEMQ_ARTEMIS_CLUSTER_USER"
+[ -n $ACTIVEMQ_ARTEMIS_CLUSTER_PASSWORD ] && ACTIVEMQ_ARTEMIS_CLUSTER_PARAMS="$ACTIVEMQ_ARTEMIS_CLUSTER_PARAMS --cluster-user $ACTIVEMQ_ARTEMIS_CLUSTER_PASSWORD"
+
 /opt/$VERSIONED_NAME/bin/artemis create /var/lib/$NAME \
 	--home /opt/$VERSIONED_NAME \
-	--user artemis \
-	--password simetraehcapa \
+	--user $ACTIVEMQ_ARTEMIS_USER \
+	--password $ACTIVEMQ_ARTEMIS_PASSWORD \
 	--role amq \
 	--require-login \
-	--cluster-user artemisCluster \
-	--cluster-password simetraehcaparetsulc 
-	
+	$ACTIVEMQ_ARTEMIS_CLUSTER_PARAMS
